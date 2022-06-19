@@ -1,5 +1,6 @@
-package com.jeffy.hotsearch;
+package com.jeffy.hotsearch.controller;
 
+import com.jeffy.hotsearch.SensitiveFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,10 +11,19 @@ import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.util.Locale;
 
+/**
+ * 不雅信息控制器
+ */
 @RestController
 @Slf4j
 public class SensitiveWordController {
-
+    /**
+     * 检查哟用户输入是否包含不雅信息
+     * @param userId 用户ID
+     * @param searchKey 输入关键字
+     * @return 检查结果
+     * @throws IOException
+     */
     @GetMapping("/check/{userId}")
     public String checkSensitiveWord(@PathVariable("userId") String userId, @PathParam("searchKey") String searchKey) throws IOException {
         log.info("userId: {}, searchKey: {}", userId, searchKey);
@@ -34,7 +44,7 @@ public class SensitiveWordController {
     }
 
     /**
-     * 替换敏感信息
+     * 替换不雅信息
      * <p>
      * http://localhost:8080/replace/user1?text=fuck%20you
      * 输出：**** you

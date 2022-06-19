@@ -1,5 +1,6 @@
-package com.jeffy.hotsearch;
+package com.jeffy.hotsearch.redis;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.Cursor;
@@ -8,6 +9,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -15,8 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-//@Transactional
+@Transactional
 @Service("redisService")
+@Slf4j
 public class RedisServiceImpl implements RedisService {
     //导入数据源
 //    @Resource(name = "redisSearchTemplate")
@@ -169,5 +172,124 @@ public class RedisServiceImpl implements RedisService {
         zSetOperations.incrementScore("title", key, 1);
         valueOperations.getAndSet(key, String.valueOf(now));
         return 1;
+    }
+
+
+
+    /**
+     * @Description 获取String类型的value
+     * @param name
+     * @return
+     */
+    @Override
+    public String findName(String name) {
+        if (name==null){
+            log.error("===============key为null======================================================");
+        }
+        return stringRedisTemplate.opsForValue().get(name);
+    }
+
+    /**
+     * @Description 添加String类型的key-value
+     * @param name
+     * @param value
+     * @return
+     */
+    @Override
+    public String setNameValue(String name, String value) {
+        log.info("==================添加String类型的key-value========================================");
+        stringRedisTemplate.opsForValue().set(name,value);
+        return name;
+    }
+
+    /**
+     * @Description 根据key删除redis的数据
+     * @param name
+     * @return
+     */
+    @Override
+    public String delNameValue(String name) {
+        stringRedisTemplate.delete(name);
+        return name;
+    }
+
+    /**
+     * @Description 根据key获取list类型的value(范围)
+     * @param key
+     * @return
+     */
+    @Override
+    public List<String> findList(String key,int start,int end) {
+        log.info("=====================按照范围查询redis中List类型=======================================");
+        return stringRedisTemplate.opsForList().range(key,start,end);
+    }
+
+    /**
+     * @Description 插入多条数据
+     * @param key
+     * @param value
+     * @return
+     */
+    @Override
+    public long setList(String key, List<String> value) {
+        log.info("=========================redis List type insert ======================================");
+        return stringRedisTemplate.opsForList().rightPushAll(key, value);
+    }
+
+    /**
+     * @Description 获取list最新记录（右侧）
+     * @param key
+     * @return
+     */
+    @Override
+    public String findLatest(String key) {
+        log.info("=============================rides List latest rigth==================================");
+        return stringRedisTemplate.opsForList().index(key,stringRedisTemplate.opsForList().size(key)-1);
+    }
+
+    /**
+     * @Description 查询hash
+     * @param key
+     * @return
+     */
+    @Override
+    public Map<Object, Object> findHash(String key) {
+        log.info("===================================redis hash =========================================");
+        return stringRedisTemplate.opsForHash().entries(key);
+    }
+
+    /**
+     * @Description 查询hash中所有的key
+     * @param key
+     * @return
+     */
+    @Override
+    public Set<Object> findHashKeys(String key) {
+        log.info("====================================== All keys of hash ===============================");
+        return stringRedisTemplate.opsForHash().keys(key);
+    }
+
+    /**
+     * @Description 查询hash中所有的value
+     * @param key
+     * @return
+     */
+    @Override
+    public List<Object> findHashValues(String key) {
+        log.info("===================================== All values of hash ==============================");
+        return stringRedisTemplate.opsForHash().values(key);
+    }
+
+    /**
+     * @Desscription 插入hash数据
+     * @param key
+     * @param map
+     * @return
+     */
+    @Override
+    public long insertHash(String key, Map<String, Object> map) {
+        log.info("====================================== insert hashes into redis ========================");
+        stringRedisTemplate.opsForHash().putAll(key,map);
+        return map.size();
     }
 }

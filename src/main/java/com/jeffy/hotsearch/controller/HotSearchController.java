@@ -1,5 +1,7 @@
-package com.jeffy.hotsearch;
+package com.jeffy.hotsearch.controller;
 
+import com.jeffy.hotsearch.domain.SearchHistory;
+import com.jeffy.hotsearch.redis.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

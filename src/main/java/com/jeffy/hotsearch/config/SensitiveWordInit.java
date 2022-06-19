@@ -1,4 +1,4 @@
-package com.jeffy.hotsearch;
+package com.jeffy.hotsearch.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;

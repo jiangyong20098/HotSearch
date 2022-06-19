@@ -1,5 +1,8 @@
 package com.jeffy.hotsearch;
 
+import com.jeffy.hotsearch.config.SensitiveWordInit;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -55,6 +58,7 @@ public class SensitiveFilter {
     public String replaceSensitiveWord(String txt, int matchType,
                                        String replaceChar) {
         String resultTxt = txt;
+
         // 获取所有的敏感词
         Set<String> set = getSensitiveWord(txt, matchType);
         Iterator<String> iterator = set.iterator();
@@ -76,11 +80,12 @@ public class SensitiveFilter {
      * @return
      */
     private String getReplaceChars(String replaceChar, int length) {
-        String resultReplace = replaceChar;
+        return StringUtils.repeat(replaceChar, length);
+        /*StringBuilder resultReplace = new StringBuilder(replaceChar);
         for (int i = 1; i < length; i++) {
-            resultReplace += replaceChar;
+            resultReplace.append(replaceChar);
         }
-        return resultReplace;
+        return resultReplace.toString();*/
     }
 
     /**

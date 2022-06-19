@@ -1,4 +1,4 @@
-package com.jeffy.hotsearch;
+package com.jeffy.hotsearch.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
